@@ -1,0 +1,9 @@
+ /* Hides the answer panel when aria-hidden="true" to make it invisible to all users and assistive tech */
+  .faq_answer[aria-hidden="true"] {
+    display: none;
+  }
+
+  /* Reveals the answer panel when aria-hidden="false" to make it visible and readable */
+  .faq_answer[aria-hidden="false"] {
+    display: block;
+  }
