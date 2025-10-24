@@ -1,35 +1,56 @@
-/* === FONT TRIMMING FOR HEADINGS === */
-/* Uses Webflow variables for precise top/bottom trim */
+/* === FONT TRIMMING CONTROLLED BY DATA ATTRIBUTE === */
+/* Works on any text element (div, span, p, h1–h6, etc.) */
+/* Uses Webflow variables + modern CSS fallback */
 
-/* Optional: set baseline variables */
+/* Webflow variables (with default fallback values) */
 :root {
-  --font-trim-heading-top: var(--_fonts-tokens---font-trim--heading-top, 0.42em);
-  --font-trim-heading-bottom: var(--_fonts-tokens---font-trim--heading-bottom, 0.4em);
+  --font-trim-heading-top: var(--_fonts-tokens---font-trim--heading-top);
+  --font-trim-heading-bottom: var(--_fonts-tokens---font-trim--heading-bottom);
+  --font-trim-body-top: var(--_fonts-tokens---font-trim--body-top);
+  --font-trim-body-bottom: var(--_fonts-tokens---font-trim--body-bottom);
+  --font-trim-custom-top: var(--_fonts-tokens---font-trim--custom-top);
+  --font-trim-custom-bottom: var(--_fonts-tokens---font-trim--custom-bottom);
 }
 
-/* Modern method (if supported by browser) */
-:is(h1, h2, h3) {
+/* Modern method (supported in Chromium 121+ / Safari 17+) */
+[data-trim] {
   text-box-trim: both;
   text-box-edge: cap alphabetic;
 }
 
-/* Fallback for browsers without text-box-trim support */
+/* Fallback for browsers without text-box-trim */
 @supports not (text-box-trim: both) {
-  :is(h1, h2, h3) {
+  [data-trim] {
     display: flow-root;
   }
 
-  :is(h1, h2, h3)::before,
-  :is(h1, h2, h3)::after {
+  [data-trim]::before,
+  [data-trim]::after {
     content: "";
     display: table;
   }
 
-  :is(h1, h2, h3)::before {
+  /* --- Heading-type trimming --- */
+  [data-trim="heading"]::before {
     margin-bottom: calc(-0.5lh + var(--font-trim-heading-top));
   }
-
-  :is(h1, h2, h3)::after {
+  [data-trim="heading"]::after {
     margin-top: calc(-0.5lh + var(--font-trim-heading-bottom));
+  }
+
+  /* --- Body-type trimming --- */
+  [data-trim="body"]::before {
+    margin-bottom: calc(-0.5lh + var(--font-trim-body-top));
+  }
+  [data-trim="body"]::after {
+    margin-top: calc(-0.5lh + var(--font-trim-body-bottom));
+  }
+
+  /* --- Custom trim (optional third type) --- */
+  [data-trim="custom"]::before {
+    margin-bottom: calc(-0.5lh + var(--font-trim-custom-top));
+  }
+  [data-trim="custom"]::after {
+    margin-top: calc(-0.5lh + var(--font-trim-custom-bottom));
   }
 }
