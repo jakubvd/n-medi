@@ -1,28 +1,48 @@
-// faq.js
+/**
+ * Initializes and manages FAQ accordion accessibility.
+ * 1. Dynamically assigns unique IDs and ARIA relationships.
+ * 2. Handles toggling of ARIA states (aria-expanded, aria-hidden) on click.
+ */
 
-// Wait for the DOM to be fully loaded before running setup
-document.addEventListener('DOMContentLoaded', () => {
-  // Assign unique IDs and ARIA relationships to each FAQ item
-  const faqItems = document.querySelectorAll('.faq-item');
-  faqItems.forEach((item, index) => {
-    const button = item.querySelector('button');
-    const content = item.querySelector('.faq-content');
-    const uniqueId = `faq${index + 1}`;
+document.addEventListener("DOMContentLoaded", () => {
+  // --- STEP 1: Assign ARIA relationships dynamically ---
+  const accordions = document.querySelectorAll(".faq_accordion");
 
-    button.setAttribute('id', `${uniqueId}-button`);
-    button.setAttribute('aria-controls', `${uniqueId}-content`);
-    button.setAttribute('aria-expanded', 'false');
+  accordions.forEach((accordion, index) => {
+    const num = index + 1;
+    const question = accordion.querySelector(".faq_question");
+    const answer = accordion.querySelector(".faq_answer");
 
-    content.setAttribute('id', `${uniqueId}-content`);
-    content.setAttribute('aria-labelledby', `${uniqueId}-button`);
+    if (!question || !answer) return; // Skip incomplete items
+
+    // Generate unique IDs for question and answer
+    const qId = `faq-q-${num}`;
+    const aId = `faq-a-${num}`;
+
+    // Assign ARIA attributes for accessibility linkage
+    question.id = qId;
+    question.setAttribute("aria-controls", aId);
+    question.setAttribute("aria-expanded", "false"); // default closed
+    answer.id = aId;
+    answer.setAttribute("aria-labelledby", qId);
+    answer.setAttribute("aria-hidden", "true"); // default hidden
   });
-});
 
-// Handle click events on FAQ buttons to toggle ARIA expanded state
-document.addEventListener('click', event => {
-  if (event.target.matches('.faq-item button')) {
-    const button = event.target;
-    const expanded = button.getAttribute('aria-expanded') === 'true';
-    button.setAttribute('aria-expanded', String(!expanded));
-  }
+  // --- STEP 2: Manage ARIA toggle behavior on click ---
+  document.addEventListener("click", (e) => {
+    // Detect clicks on .faq_question buttons only
+    const button = e.target.closest(".faq_question");
+    if (!button) return;
+
+    // Get current state
+    const expanded = button.getAttribute("aria-expanded") === "true";
+
+    // Find the corresponding answer panel
+    const answer = document.getElementById(button.getAttribute("aria-controls"));
+    if (!answer) return;
+
+    // Toggle ARIA attributes to reflect the new state
+    button.setAttribute("aria-expanded", String(!expanded));
+    answer.setAttribute("aria-hidden", String(expanded));
+  });
 });
