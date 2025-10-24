@@ -35,7 +35,7 @@
   function applyStyleFromAttr(selector, cssProp, attrName, transformFn = v => v) {
     document.querySelectorAll(`[${attrName}]`).forEach(el => {
       const value = el.getAttribute(attrName);
-      if (value) el.style[cssProp] = transformFn(value);
+      if (value && value.trim() !== '') el.style[cssProp] = transformFn(value);
     });
   }
 
@@ -50,14 +50,14 @@
     // Padding - grouped
     document.querySelectorAll('[data-padding-horizontal]').forEach(el => {
       const value = el.getAttribute('data-padding-horizontal');
-      if (value) {
+      if (value && value.trim() !== '') {
         el.style.paddingLeft = value;
         el.style.paddingRight = value;
       }
     });
     document.querySelectorAll('[data-padding-vertical]').forEach(el => {
       const value = el.getAttribute('data-padding-vertical');
-      if (value) {
+      if (value && value.trim() !== '') {
         el.style.paddingTop = value;
         el.style.paddingBottom = value;
       }
