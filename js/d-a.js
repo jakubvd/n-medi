@@ -1,29 +1,35 @@
 /**
- * d-a.js — Dynamic Attribute-Based Layout Adjustments
+ * d-a.js — Dynamic Attribute-Based Layout Adjustments (prod-safe version)
  * -----------------------------------------------------------------------------
  * Purpose:
- *   Allows applying custom layout and spacing values via data attributes.
- *   Useful for edge cases where designers specify one-off paddings, widths,
- *   or constraints directly in Webflow components.
+ *   Applies inline CSS styles dynamically based on custom data attributes
+ *   defined in Webflow elements. This allows fine-grained control over
+ *   padding, dimensions, and spacing directly in the Designer.
+ *
+ * Why "data-prod-*":
+ *   The "prod" prefix prevents Webflow Designer from displaying placeholder
+ *   labels (e.g., “max-width:”) when a data attribute is left empty.
+ *   These placeholders are automatically rendered by Webflow in edit mode
+ *   for visibility, which can break layout visuals. Prefixing them avoids this.
  *
  * Usage examples:
- *   <div data-padding-left="2rem" data-padding-right="1.5rem"></div>
- *   <div data-padding-horizontal="3rem"></div>
- *   <div data-width="200px" data-max-width="80ch"></div>
+ *   <div data-prod-padding-left="2rem" data-prod-padding-right="1.5rem"></div>
+ *   <div data-prod-padding-horizontal="3rem"></div>
+ *   <div data-prod-width="200px" data-prod-max-width="80ch"></div>
  *
  * Supported attributes:
- *   - data-padding-left
- *   - data-padding-right
- *   - data-padding-top
- *   - data-padding-bottom
- *   - data-padding-horizontal (sets both left & right)
- *   - data-padding-vertical (sets both top & bottom)
- *   - data-width
- *   - data-min-width
- *   - data-max-width
- *   - data-height
- *   - data-min-height
- *   - data-max-height
+ *   - data-prod-padding-left
+ *   - data-prod-padding-right
+ *   - data-prod-padding-top
+ *   - data-prod-padding-bottom
+ *   - data-prod-padding-horizontal (sets both left & right)
+ *   - data-prod-padding-vertical (sets both top & bottom)
+ *   - data-prod-width
+ *   - data-prod-min-width
+ *   - data-prod-max-width
+ *   - data-prod-height
+ *   - data-prod-min-height
+ *   - data-prod-max-height
  *
  * -----------------------------------------------------------------------------
  * Author: Jakub Michalak
@@ -31,47 +37,62 @@
  */
 
 (function () {
-  /** Utility to safely apply inline styles from data attributes */
-  function applyStyleFromAttr(selector, cssProp, attrName, transformFn = v => v) {
-    document.querySelectorAll(`[${attrName}]`).forEach(el => {
-      const value = el.getAttribute(attrName);
-      if (value && value.trim() !== '') el.style[cssProp] = transformFn(value);
+  /** Detect if attribute value is empty or placeholder */
+  function isEmpty(val) {
+    if (!val) return true;
+    const v = String(val).trim();
+    return (
+      !v ||
+      v === '{{}}' ||
+      v.startsWith('{{ ') ||
+      v.endsWith(' }}') ||
+      v.toLowerCase() === 'none'
+    );
+  }
+
+  /** Apply inline style if attribute has a valid value */
+  function applyIfExists(attr, cssProp) {
+    document.querySelectorAll(`[${attr}]`).forEach(el => {
+      const val = el.getAttribute(attr);
+      if (!isEmpty(val)) {
+        el.style[cssProp] = val.trim();
+      }
     });
   }
 
-  /** Initialize the layout adjustments */
-  function initDataLayout() {
-    // Padding - individual sides
-    applyStyleFromAttr('[data-padding-left]', 'paddingLeft', 'data-padding-left');
-    applyStyleFromAttr('[data-padding-right]', 'paddingRight', 'data-padding-right');
-    applyStyleFromAttr('[data-padding-top]', 'paddingTop', 'data-padding-top');
-    applyStyleFromAttr('[data-padding-bottom]', 'paddingBottom', 'data-padding-bottom');
+  /** Initialize all supported attributes */
+  function init() {
+    // Individual paddings
+    applyIfExists('data-prod-padding-left', 'paddingLeft');
+    applyIfExists('data-prod-padding-right', 'paddingRight');
+    applyIfExists('data-prod-padding-top', 'paddingTop');
+    applyIfExists('data-prod-padding-bottom', 'paddingBottom');
 
-    // Padding - grouped
-    document.querySelectorAll('[data-padding-horizontal]').forEach(el => {
-      const value = el.getAttribute('data-padding-horizontal');
-      if (value && value.trim() !== '') {
-        el.style.paddingLeft = value;
-        el.style.paddingRight = value;
+    // Horizontal and vertical shorthand
+    document.querySelectorAll('[data-prod-padding-horizontal]').forEach(el => {
+      const v = el.getAttribute('data-prod-padding-horizontal');
+      if (!isEmpty(v)) {
+        el.style.paddingLeft = v.trim();
+        el.style.paddingRight = v.trim();
       }
     });
-    document.querySelectorAll('[data-padding-vertical]').forEach(el => {
-      const value = el.getAttribute('data-padding-vertical');
-      if (value && value.trim() !== '') {
-        el.style.paddingTop = value;
-        el.style.paddingBottom = value;
+    document.querySelectorAll('[data-prod-padding-vertical]').forEach(el => {
+      const v = el.getAttribute('data-prod-padding-vertical');
+      if (!isEmpty(v)) {
+        el.style.paddingTop = v.trim();
+        el.style.paddingBottom = v.trim();
       }
     });
 
-    // Dimensions
-    applyStyleFromAttr('[data-width]', 'width', 'data-width');
-    applyStyleFromAttr('[data-min-width]', 'minWidth', 'data-min-width');
-    applyStyleFromAttr('[data-max-width]', 'maxWidth', 'data-max-width');
-    applyStyleFromAttr('[data-height]', 'height', 'data-height');
-    applyStyleFromAttr('[data-min-height]', 'minHeight', 'data-min-height');
-    applyStyleFromAttr('[data-max-height]', 'maxHeight', 'data-max-height');
+    // Width & height
+    applyIfExists('data-prod-width', 'width');
+    applyIfExists('data-prod-min-width', 'minWidth');
+    applyIfExists('data-prod-max-width', 'maxWidth');
+    applyIfExists('data-prod-height', 'height');
+    applyIfExists('data-prod-min-height', 'minHeight');
+    applyIfExists('data-prod-max-height', 'maxHeight');
   }
 
-  // Run on DOM ready
-  document.addEventListener('DOMContentLoaded', initDataLayout);
+  /** Run when DOM is ready */
+  document.addEventListener('DOMContentLoaded', init);
 })();
