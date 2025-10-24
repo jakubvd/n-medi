@@ -1,0 +1,35 @@
+/* === FONT TRIMMING FOR HEADINGS === */
+/* Uses Webflow variables for precise top/bottom trim */
+
+/* Optional: set baseline variables */
+:root {
+  --font-trim-heading-top: var(--_fonts-tokens---font-trim--heading-top, 0.42em);
+  --font-trim-heading-bottom: var(--_fonts-tokens---font-trim--heading-bottom, 0.4em);
+}
+
+/* Modern method (if supported by browser) */
+:is(h1, h2, h3) {
+  text-box-trim: both;
+  text-box-edge: cap alphabetic;
+}
+
+/* Fallback for browsers without text-box-trim support */
+@supports not (text-box-trim: both) {
+  :is(h1, h2, h3) {
+    display: flow-root;
+  }
+
+  :is(h1, h2, h3)::before,
+  :is(h1, h2, h3)::after {
+    content: "";
+    display: table;
+  }
+
+  :is(h1, h2, h3)::before {
+    margin-bottom: calc(-0.5lh + var(--font-trim-heading-top));
+  }
+
+  :is(h1, h2, h3)::after {
+    margin-top: calc(-0.5lh + var(--font-trim-heading-bottom));
+  }
+}
