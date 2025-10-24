@@ -1,19 +1,28 @@
-// Handles ARIA state toggling for FAQ accordion buttons
-document.addEventListener('click', (e) => {
-  // Detect click on .faq_question buttons only
-  const button = e.target.closest('.faq_question');
-  if (!button) return;
+// faq.js
 
-  // Check current expansion state of the clicked button
-  const expanded = button.getAttribute('aria-expanded') === 'true';
+// Wait for the DOM to be fully loaded before running setup
+document.addEventListener('DOMContentLoaded', () => {
+  // Assign unique IDs and ARIA relationships to each FAQ item
+  const faqItems = document.querySelectorAll('.faq-item');
+  faqItems.forEach((item, index) => {
+    const button = item.querySelector('button');
+    const content = item.querySelector('.faq-content');
+    const uniqueId = `faq${index + 1}`;
 
-  // Get corresponding answer panel based on aria-controls reference
-  const answer = document.getElementById(button.getAttribute('aria-controls'));
+    button.setAttribute('id', `${uniqueId}-button`);
+    button.setAttribute('aria-controls', `${uniqueId}-content`);
+    button.setAttribute('aria-expanded', 'false');
 
-  // Toggle ARIA attributes to keep screen readers in sync
-  // aria-expanded="true" → section is open; "false" → section is closed
-  button.setAttribute('aria-expanded', !expanded);
+    content.setAttribute('id', `${uniqueId}-content`);
+    content.setAttribute('aria-labelledby', `${uniqueId}-button`);
+  });
+});
 
-  // aria-hidden="true" hides the answer for assistive tech; "false" reveals it
-  answer.setAttribute('aria-hidden', expanded);
+// Handle click events on FAQ buttons to toggle ARIA expanded state
+document.addEventListener('click', event => {
+  if (event.target.matches('.faq-item button')) {
+    const button = event.target;
+    const expanded = button.getAttribute('aria-expanded') === 'true';
+    button.setAttribute('aria-expanded', String(!expanded));
+  }
 });
