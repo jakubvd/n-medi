@@ -1,0 +1,57 @@
+/* -------------------- */
+/* 1. GLOBAL HARD RESETS */
+/* -------------------- */
+
+/* Force remove default margins/paddings from all text-level elements */
+h1, h2, h3, h4, h5, h6, p, blockquote,
+.w-richtext h1, .w-richtext h2, .w-richtext h3,
+.w-richtext h4, .w-richtext h5, .w-richtext h6,
+.w-richtext p, .w-richtext blockquote {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  display: block !important;
+  box-sizing: border-box !important;
+}
+
+/* Lists */
+ul, ol,
+.w-richtext ul, .w-richtext ol {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* Inline elements (without links/buttons) */
+span, strong, em, small {
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Reset Webflow’s auto list styles (keep font inheritance) */
+ul, ol {
+  list-style: none !important;
+  padding-left: 0 !important;
+}
+
+/* Ensure f-grid utilities aren't affected by Webflow defaults */
+/* TEMP: disable margin/padding reset — only preserve structure */
+[class^="f-g-col-"],
+[class*=" f-g-col-"] {
+  display: block !important;
+  box-sizing: border-box !important;
+  width: auto !important;
+  height: auto !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  /* margin: 0 !important;
+  padding: 0 !important; */ /* temporarily disabled */
+}
+
+/* Optional: make sure global box-sizing stays consistent */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
