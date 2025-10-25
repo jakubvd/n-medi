@@ -1,0 +1,170 @@
+<style>
+/* ------------------------------------------------------
+   1) Root Variables (global tokens used across the site)
+   ------------------------------------------------------ */
+:root {
+  /* Base layout and 12-col grid */
+  --layout-width: 94.5rem; /* 1512px */
+  --cols: 12;
+
+  /* Gaps */
+  --gap-x: 1.5rem; /* horizontal */
+  --gap-y: 0rem;   /* vertical (keep manual control) */
+
+  /* Fluid inline padding for wrappers */
+  --padding-min: 1rem;
+  --padding-max: 3rem;
+  --padding-slope: 0.043;
+  --padding-fluid: calc(var(--padding-min) + ((100vw - 48rem) * var(--padding-slope)));
+  --padding-inline: clamp(var(--padding-min), var(--padding-fluid), var(--padding-max));
+}
+
+/* ------------------------------------------------------
+   2) Grid Wrapper (centers content + adds fluid padding)
+   ------------------------------------------------------ */
+.f-grid-wrap {
+  max-width: var(--layout-width);
+  width: 100%;
+  margin-inline: auto;
+  box-sizing: border-box;
+  padding-inline: var(--padding-inline);
+}
+
+/* ------------------------------------------------------
+   3) Core Grid (auto-placement, span-based, WRAPS)
+   ------------------------------------------------------ */
+/*
+  IMPORTANT:
+  - We rely on auto-placement + `grid-auto-flow: row dense`.
+  - Cards use ONLY span utilities (no explicit "start-X" in this section),
+    so when there's not enough room, they naturally wrap to the next row.
+*/
+.f-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  column-gap: var(--gap-x);
+  row-gap: var(--gap-y);
+  width: 100%;
+
+  /* Auto-placement so items flow left→right and WRAP cleanly */
+  grid-auto-flow: row dense;
+
+  /* Sane defaults */
+  align-content: start;
+  align-items: start;
+  justify-items: stretch;
+  grid-auto-rows: min-content;
+}
+
+/* ------------------------------------------------------
+   4) "Inherit Grid" slot — participates in PARENT grid
+   ------------------------------------------------------ */
+/*
+  Use this on an inner wrapper that should NOT create its own grid.
+  It lets children place themselves on the parent grid (Webflow-friendly).
+*/
+.slot-inherit-grid {
+  display: contents; /* critical: do NOT start a new grid context */
+}
+
+/* ------------------------------------------------------
+   5) Grid Item Normalization
+   ------------------------------------------------------ */
+.f-grid > *,
+.slot-inherit-grid > * {
+  min-width: 0;   /* allow content to shrink before overflow */
+  min-height: 0;
+  box-sizing: border-box;
+}
+
+/* ------------------------------------------------------
+   6) Column SPAN utilities (use these ONLY in the Impact section)
+   ------------------------------------------------------ */
+/* Place items by WIDTH only; order follows DOM. */
+.is-col-span-1  { grid-column: span 1; }
+.is-col-span-2  { grid-column: span 2; }
+.is-col-span-3  { grid-column: span 3; }
+.is-col-span-4  { grid-column: span 4; }
+.is-col-span-5  { grid-column: span 5; }
+.is-col-span-6  { grid-column: span 6; }
+.is-col-span-7  { grid-column: span 7; }
+.is-col-span-8  { grid-column: span 8; }
+.is-col-span-9  { grid-column: span 9; }
+.is-col-span-10 { grid-column: span 10; }
+.is-col-span-11 { grid-column: span 11; }
+.is-col-span-12 { grid-column: 1 / -1; } /* full width */
+
+/* Optional row-span utility if a card must be taller than others */
+.is-row-span-2  { grid-row: span 2; }
+
+/* ------------------------------------------------------
+   7) Start/End utilities (KEEP for other pages, AVOID here)
+   ------------------------------------------------------ */
+/* NOTE: For the Impact section, do NOT use start-* utilities,
+         because explicit starts prevent natural wrapping.
+         We keep them for backward-compat elsewhere. */
+.f-g-col-start-1  { grid-column-start: 1; }
+.f-g-col-start-2  { grid-column-start: 2; }
+.f-g-col-start-3  { grid-column-start: 3; }
+.f-g-col-start-4  { grid-column-start: 4; }
+.f-g-col-start-5  { grid-column-start: 5; }
+.f-g-col-start-6  { grid-column-start: 6; }
+.f-g-col-start-7  { grid-column-start: 7; }
+.f-g-col-start-8  { grid-column-start: 8; }
+.f-g-col-start-9  { grid-column-start: 9; }
+.f-g-col-start-10 { grid-column-start: 10; }
+.f-g-col-start-11 { grid-column-start: 11; }
+.f-g-col-start-12 { grid-column-start: 12; }
+
+/* Classic span set (compat) — same as the new is-col-span-* */
+.f-g-col-span-1  { grid-column-end: span 1; }
+.f-g-col-span-2  { grid-column-end: span 2; }
+.f-g-col-span-3  { grid-column-end: span 3; }
+.f-g-col-span-4  { grid-column-end: span 4; }
+.f-g-col-span-5  { grid-column-end: span 5; }
+.f-g-col-span-6  { grid-column-end: span 6; }
+.f-g-col-span-7  { grid-column-end: span 7; }
+.f-g-col-span-8  { grid-column-end: span 8; }
+.f-g-col-span-9  { grid-column-end: span 9; }
+.f-g-col-span-10 { grid-column-end: span 10; }
+.f-g-col-span-11 { grid-column-end: span 11; }
+.f-g-col-span-12 { grid-column: 1 / -1; }
+
+/* ------------------------------------------------------
+   8) Utilities
+   ------------------------------------------------------ */
+.f-g-row-break {
+  grid-column: 1 / -1;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  pointer-events: none;
+}
+
+/* Optional min-width helpers if a specific card must wrap earlier */
+.is-min-18 { min-width: 18rem; }
+.is-min-20 { min-width: 20rem; }
+.is-min-22 { min-width: 22rem; }
+.is-min-24 { min-width: 24rem; }
+
+/* ------------------------------------------------------
+   9) Container Query System (Adaptive Local Layouts)
+   ------------------------------------------------------ */
+@container con-test (max-width: 1000px) {
+  .temp-grid {
+    grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr)) !important;
+  }
+
+  .impact_card_stats.is-col-span3,
+  .impact_testimonial_clw.is-col-span-4 {
+    grid-column: auto !important;
+  }
+}
+
+@container con-test (max-width: 800px) {
+  .temp-grid {
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  }
+}
+</style>
