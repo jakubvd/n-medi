@@ -1,0 +1,130 @@
+/* ======================================================
+   GRID SYSTEM — VisionDevs Hybrid Framework
+   ====================================================== */
+
+/* ------------------------------------------------------
+   1. Root Variables
+   ------------------------------------------------------ */
+
+:root {
+  /* Base layout width and column count */
+  --layout-width: 94.5rem; /* 1512px ÷ 16 */
+  --cols: 12; /* Default column count */
+
+  /* Gutter spacing */
+  --gap-x: 1.5rem; /* Horizontal gap (24px) */
+  --gap-y: 0rem;   /* Vertical gap (manual control) */
+
+  /* Fluid padding calculation */
+  --padding-min: 1rem;
+  --padding-max: 3rem;
+  --padding-slope: 0.043;
+  --padding-fluid: calc(var(--padding-min) + ((100vw - 48rem) * var(--padding-slope)));
+  --padding-inline: clamp(var(--padding-min), var(--padding-fluid), var(--padding-max));
+}
+
+/* ------------------------------------------------------
+   2. Grid Wrapper
+   ------------------------------------------------------ */
+/* Centers content and applies fluid padding */
+
+.f-grid-wrap {
+  max-width: var(--layout-width);
+  width: 100%;
+  margin-inline: auto;
+  box-sizing: border-box;
+  padding-inline: var(--padding-inline);
+}
+
+/* ------------------------------------------------------
+   3. Grid Container
+   ------------------------------------------------------ */
+/* Defines the grid structure and base layout logic */
+
+.f-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 12), 1fr);
+  column-gap: var(--gap-x);
+  row-gap: var(--gap-y);
+  width: 100%;
+  align-content: start;
+  align-items: start;
+  grid-auto-rows: min-content;
+  grid-auto-flow: row; /* Keep DOM order stable */
+}
+
+/* Custom column count using data attributes */
+.f-grid[data-cols="12"] { --cols: 12; }
+.f-grid[data-cols="9"]  { --cols: 9; }
+.f-grid[data-cols="6"]  { --cols: 6; }
+.f-grid[data-cols="4"]  { --cols: 4; }
+.f-grid[data-cols="3"]  { --cols: 3; }
+.f-grid[data-cols="2"]  { --cols: 2; }
+.f-grid[data-cols="1"]  { --cols: 1; }
+
+/* ------------------------------------------------------
+   4. Grid Items
+   ------------------------------------------------------ */
+/*
+  Each element inside the grid is controlled manually via Webflow GUI.
+  Example:
+    grid-column: 3 / 9;   → spans columns 3 to 8
+    grid-row: 1 / span 2; → spans two rows
+*/
+
+.f-grid > * {
+  min-width: 0;
+  min-height: 0;
+  box-sizing: border-box;
+}
+
+/* Preserve inline Webflow column definitions */
+.f-grid > *[style*="grid-column"] {
+  grid-column: unset !important;
+}
+
+/* Preserve inline Webflow row definitions */
+.f-grid > *[style*="grid-row"] {
+  grid-row: unset !important;
+}
+
+/* ------------------------------------------------------
+   5. Utility Classes (Fallbacks)
+   ------------------------------------------------------ */
+/* Useful when grid placement needs to be applied via classes instead of inline styles */
+
+.f-g-col-span-1  { grid-column-end: span 1; }
+.f-g-col-span-2  { grid-column-end: span 2; }
+.f-g-col-span-3  { grid-column-end: span 3; }
+.f-g-col-span-4  { grid-column-end: span 4; }
+.f-g-col-span-5  { grid-column-end: span 5; }
+.f-g-col-span-6  { grid-column-end: span 6; }
+.f-g-col-span-7  { grid-column-end: span 7; }
+.f-g-col-span-8  { grid-column-end: span 8; }
+.f-g-col-span-9  { grid-column-end: span 9; }
+.f-g-col-span-10 { grid-column-end: span 10; }
+.f-g-col-span-11 { grid-column-end: span 11; }
+.f-g-col-span-12 { grid-column: 1 / -1; }
+
+.f-g-col-start-1  { grid-column-start: 1; }
+.f-g-col-start-2  { grid-column-start: 2; }
+.f-g-col-start-3  { grid-column-start: 3; }
+.f-g-col-start-4  { grid-column-start: 4; }
+.f-g-col-start-5  { grid-column-start: 5; }
+.f-g-col-start-6  { grid-column-start: 6; }
+.f-g-col-start-7  { grid-column-start: 7; }
+.f-g-col-start-8  { grid-column-start: 8; }
+.f-g-col-start-9  { grid-column-start: 9; }
+.f-g-col-start-10 { grid-column-start: 10; }
+.f-g-col-start-11 { grid-column-start: 11; }
+.f-g-col-start-12 { grid-column-start: 12; }
+
+/* Forces a manual row break between grid elements */
+.f-g-row-break {
+  grid-column: 1 / -1;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  pointer-events: none;
+}
