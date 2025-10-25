@@ -1,22 +1,18 @@
 <style>
-/* ======================================================
-   GRID SYSTEM — VisionDevs Hybrid Framework
-   ====================================================== */
 
 /* ------------------------------------------------------
-   1. Root Variables
+   1) Root Variables (global tokens used across the site)
    ------------------------------------------------------ */
-
 :root {
-  /* Base layout width and column count */
-  --layout-width: 94.5rem; /* 1512px ÷ 16 */
-  --cols: 12; /* Default column count */
+  /* Base layout and 12-col grid */
+  --layout-width: 94.5rem; /* 1512px */
+  --cols: 12;
 
-  /* Gutter spacing */
-  --gap-x: 1.5rem; /* Horizontal gap (24px) */
-  --gap-y: 0rem;   /* Vertical gap (manual control) */
+  /* Gaps */
+  --gap-x: 1.5rem; /* horizontal */
+  --gap-y: 0rem;   /* vertical (keep manual control) */
 
-  /* Fluid padding calculation */
+  /* Fluid inline padding for wrappers */
   --padding-min: 1rem;
   --padding-max: 3rem;
   --padding-slope: 0.043;
@@ -25,12 +21,10 @@
 }
 
 /* ------------------------------------------------------
-   2. Grid Wrapper
+   2) Grid Wrapper (centers content + adds fluid padding)
    ------------------------------------------------------ */
-/* Centers content and applies fluid padding */
-
 .f-grid-wrap {
-  max-width: var(--fluid-grid--layout-width);
+  max-width: var(--layout-width);
   width: 100%;
   margin-inline: auto;
   box-sizing: border-box;
@@ -38,75 +32,78 @@
 }
 
 /* ------------------------------------------------------
-   3. Grid Container
+   3) Core Grid (auto-placement, span-based, WRAPS)
    ------------------------------------------------------ */
-/* Defines the grid structure and base layout logic */
-
+/*
+  IMPORTANT:
+  - We rely on auto-placement + `grid-auto-flow: row dense`.
+  - Cards use ONLY span utilities (no explicit "start-X" in this section),
+    so when there's not enough room, they naturally wrap to the next row.
+*/
 .f-grid {
   display: grid;
-  grid-template-columns: repeat(var(--cols, 12), 1fr);
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
   column-gap: var(--gap-x);
   row-gap: var(--gap-y);
   width: 100%;
+
+  /* Auto-placement so items flow left→right and WRAP cleanly */
+  grid-auto-flow: row dense;
+
+  /* Sane defaults */
   align-content: start;
   align-items: start;
+  justify-items: stretch;
   grid-auto-rows: min-content;
-  grid-auto-flow: row; /* Keep DOM order stable */
 }
 
-/* Custom column count using data attributes */
-.f-grid[data-cols="12"] { --cols: 12; }
-.f-grid[data-cols="9"]  { --cols: 9; }
-.f-grid[data-cols="6"]  { --cols: 6; }
-.f-grid[data-cols="4"]  { --cols: 4; }
-.f-grid[data-cols="3"]  { --cols: 3; }
-.f-grid[data-cols="2"]  { --cols: 2; }
-.f-grid[data-cols="1"]  { --cols: 1; }
-
 /* ------------------------------------------------------
-   4. Grid Items
+   4) "Inherit Grid" slot — participates in PARENT grid
    ------------------------------------------------------ */
 /*
-  Each element inside the grid is controlled manually via Webflow GUI.
-  Example:
-    grid-column: 3 / 9;   → spans columns 3 to 8
-    grid-row: 1 / span 2; → spans two rows
+  Use this on an inner wrapper that should NOT create its own grid.
+  It lets children place themselves on the parent grid (Webflow-friendly).
 */
+.slot-inherit-grid {
+  display: contents; /* critical: do NOT start a new grid context */
+}
 
-.f-grid > * {
-  min-width: 0;
+/* ------------------------------------------------------
+   5) Grid Item Normalization
+   ------------------------------------------------------ */
+.f-grid > *,
+.slot-inherit-grid > * {
+  min-width: 0;   /* allow content to shrink before overflow */
   min-height: 0;
   box-sizing: border-box;
 }
 
-/* Preserve inline Webflow column definitions */
-.f-grid > *[style*="grid-column"] {
-  grid-column: unset !important;
-}
+/* ------------------------------------------------------
+   6) Column SPAN utilities (use these ONLY in the Impact section)
+   ------------------------------------------------------ */
+/* Place items by WIDTH only; order follows DOM. */
+.is-col-span-1  { grid-column: span 1; }
+.is-col-span-2  { grid-column: span 2; }
+.is-col-span-3  { grid-column: span 3; }
+.is-col-span-4  { grid-column: span 4; }
+.is-col-span-5  { grid-column: span 5; }
+.is-col-span-6  { grid-column: span 6; }
+.is-col-span-7  { grid-column: span 7; }
+.is-col-span-8  { grid-column: span 8; }
+.is-col-span-9  { grid-column: span 9; }
+.is-col-span-10 { grid-column: span 10; }
+.is-col-span-11 { grid-column: span 11; }
+.is-col-span-12 { grid-column: 1 / -1; } /* full width */
 
-/* Preserve inline Webflow row definitions */
-.f-grid > *[style*="grid-row"] {
-  grid-row: unset !important;
-}
+/* Optional row-span utility if a card must be taller than others */
+.is-row-span-2  { grid-row: span 2; }
 
 /* ------------------------------------------------------
-   5. Utility Classes (Fallbacks)
+   7) Start/End utilities (KEEP for other pages, AVOID here)
    ------------------------------------------------------ */
-/* Useful when grid placement needs to be applied via classes instead of inline styles */
-
-.f-g-col-span-1  { grid-column-end: span 1; }
-.f-g-col-span-2  { grid-column-end: span 2; }
-.f-g-col-span-3  { grid-column-end: span 3; }
-.f-g-col-span-4  { grid-column-end: span 4; }
-.f-g-col-span-5  { grid-column-end: span 5; }
-.f-g-col-span-6  { grid-column-end: span 6; }
-.f-g-col-span-7  { grid-column-end: span 7; }
-.f-g-col-span-8  { grid-column-end: span 8; }
-.f-g-col-span-9  { grid-column-end: span 9; }
-.f-g-col-span-10 { grid-column-end: span 10; }
-.f-g-col-span-11 { grid-column-end: span 11; }
-.f-g-col-span-12 { grid-column: 1 / -1; }
-
+/* NOTE: For the Impact section, do NOT use start-* utilities,
+         because explicit starts prevent natural wrapping.
+         We keep them for backward-compat elsewhere. */
 .f-g-col-start-1  { grid-column-start: 1; }
 .f-g-col-start-2  { grid-column-start: 2; }
 .f-g-col-start-3  { grid-column-start: 3; }
@@ -120,7 +117,23 @@
 .f-g-col-start-11 { grid-column-start: 11; }
 .f-g-col-start-12 { grid-column-start: 12; }
 
-/* Forces a manual row break between grid elements */
+/* Classic span set (compat) — same as the new is-col-span-* */
+.f-g-col-span-1  { grid-column-end: span 1; }
+.f-g-col-span-2  { grid-column-end: span 2; }
+.f-g-col-span-3  { grid-column-end: span 3; }
+.f-g-col-span-4  { grid-column-end: span 4; }
+.f-g-col-span-5  { grid-column-end: span 5; }
+.f-g-col-span-6  { grid-column-end: span 6; }
+.f-g-col-span-7  { grid-column-end: span 7; }
+.f-g-col-span-8  { grid-column-end: span 8; }
+.f-g-col-span-9  { grid-column-end: span 9; }
+.f-g-col-span-10 { grid-column-end: span 10; }
+.f-g-col-span-11 { grid-column-end: span 11; }
+.f-g-col-span-12 { grid-column: 1 / -1; }
+
+/* ------------------------------------------------------
+   8) Utilities
+   ------------------------------------------------------ */
 .f-g-row-break {
   grid-column: 1 / -1;
   height: 0;
@@ -130,4 +143,9 @@
   pointer-events: none;
 }
 
+/* Optional min-width helpers if a specific card must wrap earlier */
+.is-min-18 { min-width: 18rem; }
+.is-min-20 { min-width: 20rem; }
+.is-min-22 { min-width: 22rem; }
+.is-min-24 { min-width: 24rem; }
 </style>
