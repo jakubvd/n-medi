@@ -1,7 +1,5 @@
 /* ======================================================
-   GRID SYSTEM — VisionDevs Hybrid Framework dziala ok last
-   
-
+   GRID SYSTEM — VisionDevs Hybrid Framework
    ====================================================== */
 
 /* ------------------------------------------------------
@@ -31,7 +29,7 @@
 /* Centers content and applies fluid padding */
 
 .f-grid-wrap {
-  max-width: var(--layout-width);
+  max-width: var(--fluid-grid--layout-width);
   width: 100%;
   margin-inline: auto;
   box-sizing: border-box;
