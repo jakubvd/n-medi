@@ -1,52 +1,72 @@
 /* =========================================================
-   MARQUEE – PIXEL-PRECISE GRID CALCULATION (12-COL SYSTEM) - ustawieni fixed ok 
+   MARQUEE – FLUID WIDTH CALCULATION BASED ON 100VW skaluej do 1200 ok 
    ========================================================= */
 
-/* 1) Dynamic column width — based on layout width minus padding and gaps */
+/* 1) Root variables (integrated with your existing framework) */
 :root {
-  /* One grid column width (auto-updates with fluid padding) */
-  --col: calc(((var(--layout-width) - (2 * var(--padding-inline))) - (11 * var(--gap-x))) / 12);
+  /* Fluid layout width:
+     - min: 64rem (≈1024px)
+     - preferred: 100vw (browser width)
+     - max: 94.5rem (1512px)
+  */
+  --layout-fluid: clamp(64rem, 100vw, 94.5rem);
+
+  /* Core grid values */
+  --cols: 12;
+  --gap-x: 1.5rem;
+  --gap-y: 0rem;
+
+  /* Padding (already in your system) */
+  --padding-min: 1rem;
+  --padding-max: 3rem;
+  --padding-slope: 0.043;
+  --padding-fluid: calc(var(--padding-min) + ((100vw - 48rem) * var(--padding-slope)));
+  --padding-inline: clamp(var(--padding-min), var(--padding-fluid), var(--padding-max));
+
+  /* Dynamic column width based on fluid layout width */
+  --col: calc(((var(--layout-fluid) - (2 * var(--padding-inline))) - (11 * var(--gap-x))) / 12);
 }
 
-/* 2) Track container (uses flex, perfectly aligned with grid) */
+/* 2) Marquee wrapper */
+.marquee_wrap {
+  container-type: inline-size;
+  container-name: marquee;
+  overflow: hidden;
+  width: 100%;
+}
+
+/* 3) Track (acts like a grid row) */
 .marquee_track {
   display: flex;
   align-items: center;
   gap: var(--gap-x);
   overflow: visible;
-
-  /* Exact offset:
-     → move left by 1 column + 1 gap + wrapper padding
-     → ensures first card starts exactly half a column before visible grid edge
-  */
   transform: translateX(
     calc(-1 * ((var(--col) * 1) + var(--gap-x) + var(--padding-inline) - (var(--col) * 0.5)))
   );
+  transition: transform 0.3s ease;
 }
 
-/* 3) Card styles (shared) */
+/* 4) Cards */
 .marquee_card_3,
 .marquee_card_4 {
   flex-shrink: 0;
   border-radius: 0.5rem;
   overflow: hidden;
-  background: #3366cc22; /* temporary visual color for testing */
+  aspect-ratio: 4 / 3;
+  background: #3366cc22; /* debug */
 }
 
-/* 4) Card widths – match column spans precisely */
+/* Exact grid-proportion widths */
 .marquee_card_3 {
-  /* span 3 columns + 2 gaps */
   width: calc((var(--col) * 3) + (var(--gap-x) * 2));
-  max-height: 26.4375rem; /* 423px */
 }
 
 .marquee_card_4 {
-  /* span 4 columns + 3 gaps */
   width: calc((var(--col) * 4) + (var(--gap-x) * 3));
-  max-height: 22.25rem; /* 356px */
 }
 
-/* 5) Image styling */
+/* 5) Image style */
 .marquee_card_3 img,
 .marquee_card_4 img {
   display: block;
@@ -63,4 +83,40 @@
 .marquee_card_4:hover img {
   filter: grayscale(0);
   opacity: 1;
+}
+
+/* =========================================================
+   RESPONSIVE CONTAINER QUERIES
+   ========================================================= */
+@container marquee (max-width: 75rem) {
+  .marquee_card_3 {
+    width: calc((var(--col) * 2.5) + (var(--gap-x) * 2));
+  }
+  .marquee_card_4 {
+    width: calc((var(--col) * 3.5) + (var(--gap-x) * 3));
+  }
+  .marquee_track {
+    transform: translateX(calc(-1 * ((var(--col) * 0.5) + var(--gap-x))));
+  }
+}
+
+@container marquee (max-width: 56.25rem) {
+  .marquee_card_3,
+  .marquee_card_4 {
+    width: 80vw;
+  }
+  .marquee_track {
+    transform: translateX(-10vw);
+    gap: 1rem;
+  }
+}
+
+@container marquee (max-width: 37.5rem) {
+  .marquee_card_3,
+  .marquee_card_4 {
+    width: 90vw;
+  }
+  .marquee_track {
+    transform: translateX(-5vw);
+  }
 }
