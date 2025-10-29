@@ -1,0 +1,56 @@
+/* =========================================================
+   MARQUEE – EXACT GRID WIDTH CALCULATION (WITH PADDING) - v 1.0 - szek staitc ok ale usatwinie off 
+   ========================================================= */
+
+/* 1) Dynamic column width — now includes wrapper padding */
+:root {
+  /* width inside grid area only (subtract padding-inline ×2) */
+  --col: calc(((var(--layout-width) - (2 * var(--padding-inline))) - (11 * var(--gap-x))) / 12);
+}
+
+/* 2) Track container */
+.marquee_track {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-x);
+  overflow: visible;
+
+  /* Offset by 2 columns + 1 gap, exactly matching the left padding */
+  transform: translateX(calc(-1 * ((var(--col) * 2) + var(--gap-x) + var(--padding-inline))));
+}
+
+/* 3) Card styles */
+.marquee_card_3,
+.marquee_card_4 {
+  flex-shrink: 0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+/* 4) Card widths – precise proportions */
+.marquee_card_3 {
+  width: calc((var(--col) * 3) + (var(--gap-x) * 2));
+}
+
+.marquee_card_4 {
+  width: calc((var(--col) * 4) + (var(--gap-x) * 3));
+}
+
+/* 5) Image styling */
+.marquee_card_3 img,
+.marquee_card_4 img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: inherit;
+  filter: grayscale(1);
+  opacity: 0.9;
+  transition: all 0.3s ease;
+}
+
+.marquee_card_3:hover img,
+.marquee_card_4:hover img {
+  filter: grayscale(0);
+  opacity: 1;
+}
