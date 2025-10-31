@@ -1,0 +1,40 @@
+<style>
+/* HOW IT WORKS — Sequential line + active state */
+
+.how_tab_link_1,
+.how_tab_link_2,
+.how_tab_link_3 {
+  position: relative;
+  border-bottom: 1px solid var(--_colours---stroke--stroke-dark);
+  overflow: hidden;
+  transition: color 0.2s ease;
+}
+
+/* Line under each tab */
+.how_tab_link_1_line,
+.how_tab_link_2_line,
+.how_tab_link_3_line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: var(--_colours---stroke--stroke-brand);
+  width: 0%;
+  opacity: 1;
+}
+
+/* Active tab color styles */
+.how_tab_link_1.is-active,
+.how_tab_link_2.is-active,
+.how_tab_link_3.is-active {
+  color: var(--_colours---text--text-brand-main);
+}
+
+.how_tab_link_1.is-active .how_it_works_tab_link_number,
+.how_tab_link_2.is-active .how_it_works_tab_link_number,
+.how_tab_link_3.is-active .how_it_works_tab_link_number {
+  background: var(--_colours---background--bg-brand);
+  color: var(--_colours---text--text-alternate);
+  transition: all 0.3s ease-in-out;
+}
+</style>
