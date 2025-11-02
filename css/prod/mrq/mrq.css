@@ -1,0 +1,150 @@
+/* =========================================================
+   MARQUEE – FLUID GRID VERSION (WORKS WITH GLOBAL ROOT VARS)
+   ========================================================= */
+
+/* Marquee main wrapper */
+.marquee_wrap {
+  container-type: inline-size;
+  container-name: marquee;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  opacity: 0;
+  animation: fadeInMarquee 1s ease-in-out forwards;
+}
+
+/* Edge mask gradient for smooth fade on sides */
+.marquee_wrap::before,
+.marquee_wrap::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 8%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Left side mask gradient */
+.marquee_wrap::before {
+  left: 0;
+  background: linear-gradient(
+    to right,
+    var(--_colours---background--bg-main) 0%,
+    color-mix(in srgb, var(--_colours---background--bg-main) 95%, transparent) 10%,
+    color-mix(in srgb, var(--_colours---background--bg-main) 90%, transparent) 20%,
+    color-mix(in srgb, var(--_colours---background--bg-main) 80%, transparent) 30%,
+    color-mix(in srgb, var(--_colours---background--bg-main) 70%, transparent) 40%,
+    color-mix(in srgb, var(--_colours---background--bg-main) 60%, transparent) 50%,
+    color-mix(in srgb, var(--_colours---background--bg-main) 45%, transparent) 60%,
+    color-mix(in srgb, var(--_colours---background--bg-main) 30%, transparent) 70%,
+    color-mix(in srgb, var(--_colours---background--bg-main) 15%, transparent) 80%,
+    color-mix(in srgb, var(--_colours---background--bg-main) 5%, transparent) 90%,
+    transparent 100%
+  );
+}
+
+/* Right side mask gradient */
+.marquee_wrap::after {
+  right: 0;
+  background: linear-gradient(
+    to left,
+    var(--_colours---background--bg-main) 0%,
+    color-mix(in srgb, var(--_colours---background--bg-main) 95%, transparent) 10%,
+    color-mix(in srgb, var(--_colours---background--bg-main) 90%, transparent) 20%,
+    color-mix(in srgb, var(--_colours---background--bg-main) 80%, transparent) 30%,
+    color-mix(in srgb, var(--_colours---background--bg-main) 70%, transparent) 40%,
+    color-mix(in srgb, var(--_colours---background--bg-main) 60%, transparent) 50%,
+    color-mix(in srgb, var(--_colours---background--bg-main) 45%, transparent) 60%,
+    color-mix(in srgb, var(--_colours---background--bg-main) 30%, transparent) 70%,
+    color-mix(in srgb, var(--_colours---background--bg-main) 15%, transparent) 80%,
+    color-mix(in srgb, var(--_colours---background--bg-main) 5%, transparent) 90%,
+    transparent 100%
+  );
+}
+
+/* Main scrolling track */
+.marquee_track {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap-x);
+  overflow: visible;
+  position: relative;
+  transform: translateX(0);
+  animation: marquee-scroll 10s linear infinite;
+}
+
+/* Continuous scroll animation */
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* Card set group */
+.marquee_cards_set {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap-x);
+  flex-shrink: 0;
+  position: relative;
+}
+
+/* Remove extra margin between sets */
+.marquee_cards_set[data-marquee="right"] {
+  margin-left: 0;
+}
+
+/* Card size 3-column */
+.marquee_card_3 {
+  flex-shrink: 0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: #3366cc22;
+  width: calc((var(--col) * 3) + (var(--gap-x) * 2));
+  aspect-ratio: 331 / 421;
+}
+
+/* Card size 4-column */
+.marquee_card_4 {
+  flex-shrink: 0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: #3366cc22;
+  width: calc((var(--col) * 4) + (var(--gap-x) * 3));
+  aspect-ratio: 453 / 356;
+}
+
+/* Image fills the card */
+.marquee_card_3 img,
+.marquee_card_4 img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
+
+/* Responsive adjustments */
+@container marquee (max-width: 75rem) {
+  .marquee_track { animation: marquee-scroll 90s linear infinite; }
+  .marquee_card_3 { width: calc((var(--col) * 2.5) + (var(--gap-x) * 2)); }
+  .marquee_card_4 { width: calc((var(--col) * 3.5) + (var(--gap-x) * 3)); }
+}
+
+@container marquee (max-width: 56.25rem) {
+  .marquee_track { animation: marquee-scroll 120s linear infinite; }
+  .marquee_card_3,
+  .marquee_card_4 { width: 80vw; }
+}
+
+@container marquee (max-width: 37.5rem) {
+  .marquee_track { animation: marquee-scroll 160s linear infinite; }
+  .marquee_card_3,
+  .marquee_card_4 { width: 90vw; }
+}
+
+/* Fade-in animation on load */
+@keyframes fadeInMarquee {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
