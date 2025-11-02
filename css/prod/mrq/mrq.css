@@ -1,3 +1,4 @@
+
 /* =========================================================
    MARQUEE – FLUID GRID VERSION (WORKS WITH GLOBAL ROOT VARS)
    ========================================================= */
@@ -67,7 +68,6 @@
 .marquee_track {
   display: flex;
   align-items: flex-start;
-  gap: var(--gap-x);
   overflow: visible;
   position: relative;
   transform: translateX(0);
@@ -84,7 +84,6 @@
 .marquee_cards_set {
   display: flex;
   align-items: flex-start;
-  gap: var(--gap-x);
   flex-shrink: 0;
   position: relative;
 }
@@ -99,7 +98,6 @@
   flex-shrink: 0;
   border-radius: 0.5rem;
   overflow: hidden;
-  background: #3366cc22;
   width: calc((var(--col) * 3) + (var(--gap-x) * 2));
   aspect-ratio: 331 / 421;
 }
@@ -109,9 +107,10 @@
   flex-shrink: 0;
   border-radius: 0.5rem;
   overflow: hidden;
-  background: #3366cc22;
   width: calc((var(--col) * 4) + (var(--gap-x) * 3));
   aspect-ratio: 453 / 356;
+  padding-right: var(--gap-x);
+  padding-left: var(--gap-x);
 }
 
 /* Image fills the card */
